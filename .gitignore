@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Slidev / Vite build output and caches
+dist/
+.slidev/
+.vite/
+.vite-inspect/
+.remote-assets/
+components.d.ts
+
+# Default Slidev exports
+slides-export*/
+slides-export*.pdf
+slides-export*.pptx
+
+# Local configuration and secrets
+*.local
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
