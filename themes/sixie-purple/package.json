@@ -1,0 +1,32 @@
+{
+  "name": "slidev-theme-sixie-purple",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Six Feet Up's Sixie Purple visual identity for Slidev",
+  "license": "CC-BY-SA-4.0",
+  "keywords": [
+    "slidev",
+    "slidev-theme"
+  ],
+  "engines": {
+    "slidev": ">=53.0.0"
+  },
+  "slidev": {
+    "colorSchema": "light",
+    "defaults": {
+      "aspectRatio": "16/9",
+      "canvasWidth": 980,
+      "transition": "sixie-slide-left | sixie-slide-right",
+      "fonts": {
+        "sans": "Poppins",
+        "serif": "Poppins",
+        "mono": "Roboto Mono",
+        "weights": "400,500,600,700,800"
+      },
+      "themeConfig": {
+        "primary": "#9d00b0"
+      }
+    }
+  }
+}

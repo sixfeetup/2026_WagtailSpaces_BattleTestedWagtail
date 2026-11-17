@@ -1,9 +1,8 @@
 ---
-# try also 'default' to start simple
-theme: seriph
-# random image from a curated Unsplash collection by Anthony
-# like them? see https://unsplash.com/collections/94734566/slidev
-background: https://cover.sli.dev
+theme: ./themes/sixie-purple
+layout: cover
+speaker: Calvin Hendryx-Parker
+event: Sixie Purple · Theme Preview
 # some information about your slides (markdown enabled)
 title: Welcome to Slidev
 info: |
@@ -16,8 +15,7 @@ class: text-center
 # https://sli.dev/features/drawing
 drawings:
   persist: false
-# slide transition: https://sli.dev/guide/animations.html#slide-transitions
-transition: slide-left
+# Sliding transitions are inherited from the local Sixie Purple theme.
 # enable Comark Syntax: https://comark.dev/syntax/markdown
 comark: true
 # duration of the presentation
@@ -46,8 +44,6 @@ The last comment block of each slide will be treated as slide notes. It will be 
 -->
 
 ---
-transition: fade-out
----
 
 # What is Slidev?
 
@@ -70,24 +66,12 @@ You can have `style` tag in markdown to override the style for the current page.
 Learn more: https://sli.dev/features/slide-scope-style
 -->
 
-<style>
-h1 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
-
 <!--
 Here is another comment.
 -->
 
 ---
-transition: slide-up
+layout: section
 level: 2
 ---
 
@@ -133,8 +117,8 @@ The title will be inferred from your slide content, or you can override it with 
 <Toc text-sm minDepth="1" maxDepth="2" />
 
 ---
-layout: image-right
-image: https://cover.sli.dev
+layout: code
+class: code-dense
 ---
 
 # Code
@@ -395,6 +379,8 @@ also allows you to add
 </div>
 
 ---
+zoom: 0.95
+---
 
 # Motions
 
@@ -651,12 +637,13 @@ console.log(emptyArray<number>(10).reduce(fib => [...fib, fib.at(-1)! + fib.at(-
 ```
 
 ---
-layout: center
-class: text-center
+layout: conclusion
 ---
 
 # Learn More
 
-[Documentation](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/resources/showcases)
+1. [Documentation](https://sli.dev)
+2. [GitHub](https://github.com/slidevjs/slidev)
+3. [Showcases](https://sli.dev/resources/showcases)
 
 <PoweredBySlidev mt-10 />

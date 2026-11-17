@@ -1,0 +1,35 @@
+:root {
+  --sixie-transition-duration: 800ms;
+  --sixie-transition-easing: cubic-bezier(0.26, 0.86, 0.44, 0.985);
+}
+
+/* Match Reveal's slide travel/fade without replacing Slidev's navigation. */
+.sixie-slide-left-enter-active,
+.sixie-slide-left-leave-active,
+.sixie-slide-right-enter-active,
+.sixie-slide-right-leave-active {
+  transition:
+    translate var(--sixie-transition-duration) var(--sixie-transition-easing),
+    opacity var(--sixie-transition-duration) var(--sixie-transition-easing);
+}
+
+.sixie-slide-left-enter-from,
+.sixie-slide-right-leave-to {
+  translate: 150% 0;
+  opacity: 0;
+}
+
+.sixie-slide-left-leave-to,
+.sixie-slide-right-enter-from {
+  translate: -150% 0;
+  opacity: 0;
+}
+
+/* Presenter previews remain static; exports never receive transition classes. */
+.slidev-presenter :is(.sixie-slide-left-enter-active, .sixie-slide-left-leave-active, .sixie-slide-right-enter-active, .sixie-slide-right-leave-active) {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --sixie-transition-duration: 1ms; }
+}

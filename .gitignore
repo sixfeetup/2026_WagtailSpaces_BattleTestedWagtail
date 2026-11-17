@@ -21,6 +21,9 @@ slides-export*.pptx
 !.env.example
 !.env.*.example
 
+# Local agent task state (keep shared MCP configuration tracked)
+.pi/todos/
+
 # Logs and OS files
 *.log
 .DS_Store

@@ -1,0 +1,39 @@
+/* Backgrounds belong to the viewport, not the scaled/sliding content canvas.
+   Hide teleported layers for browser printing even when the route stays in play. */
+.sixie-backdrops { display: none; }
+
+@media screen {
+  #page-root > #slide-container:has(.sixie-viewport) {
+    --slidev-slide-container-background: #000;
+    /* Keep the negative backdrop stack above this container's black base,
+       but below the normal canvas, controls, pointers and drawing layers. */
+    isolation: isolate;
+  }
+
+  #page-root > #slide-container > .sixie-backdrops {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: #000;
+  }
+
+  .sixie-backdrop {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--sixie-transition-duration) var(--sixie-transition-easing);
+  }
+
+  .sixie-backdrop.is-active { opacity: 1; }
+  .sixie-backdrop[data-background='paper'] { background: var(--sixie-paper); }
+  .sixie-backdrop[data-background='cover'] { background: var(--sixie-cover-background); }
+  .sixie-backdrop[data-background='section'] { background: var(--sixie-section-background); }
+  .sixie-backdrop[data-background='dark'] { background: var(--sixie-dark-background); }
+
+  #page-root > #slide-container:has(.sixie-viewport) > #slide-content,
+  #page-root > #slide-container:has(.sixie-viewport) > #slide-content .slidev-layout:is(.sixie-cover, .sixie-section, .sixie-frame) {
+    background: transparent;
+  }
+}
