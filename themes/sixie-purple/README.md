@@ -91,7 +91,7 @@ Use `layout: code` (or `code-example`) with `class: code-large`, `code-medium`, 
 
 For title-body panels, use a top-level ordered list. Ordinary text and `<span>` wrappers both work. For the optional four challenge cards, use `.sixie-challenge-cards` containing `.sixie-challenge-card` elements with `.sixie-challenge-icon` spans, as demonstrated in `example.md`; labels and icons are caller-supplied.
 
-The gallery deliberately reuses text from the original IAM presentation for an apples-to-apples visual comparison. It is sample content, not the new Wagtail talk. Preview it with `pnpm exec slidev themes/sixie-purple/example.md --port 3031` from the deck root. The main starter deck still has 16 slides.
+The gallery deliberately reuses text from the original IAM presentation for an apples-to-apples visual comparison. It is sample content, not the new Wagtail talk. Preview it with `pnpm exec slidev themes/sixie-purple/example.md --port 3031` from the deck root. The theme gallery remains independent of the main presentation's content and slide count.
 
 Theme colors are CSS custom properties (`--sixie-purple`, `--sixie-blue`, etc.) in `styles/theme.css`. Layouts use native slots and preserve click animations, presenter notes, and code highlighting. The original 1200×675 proportions are adapted to Slidev's 980px-wide 16:9 canvas. The starter deck uses a slightly denser body scale for its feature demonstrations.
 

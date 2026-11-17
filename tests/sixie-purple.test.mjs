@@ -97,14 +97,13 @@ test('artwork is bundled and all theme asset URLs resolve without deck-root path
   }
 })
 
-test('starter deck uses the local theme and previews core layouts', async () => {
+test('presentation selects the local theme and the independent gallery previews core layouts', async () => {
   const deck = await readFile(new URL('../slides.md', import.meta.url), 'utf8')
   assert.match(deck, /theme: \.\/themes\/sixie-purple/)
+  const gallery = await read('example.md')
   for (const layout of ['cover', 'section', 'code', 'conclusion', 'two-cols'])
-    assert.ok(deck.includes(`layout: ${layout}`), `missing preview of ${layout}`)
+    assert.ok(gallery.includes(`layout: ${layout}`), `missing gallery preview of ${layout}`)
   assert.doesNotMatch(deck, /-webkit-text-fill-color: transparent/)
-  assert.ok(deck.includes('# Welcome to Slidev'))
-  assert.ok(deck.includes('# Monaco Editor'))
 })
 
 test('theme documents reuse, attribution, and the adapted source license', async () => {

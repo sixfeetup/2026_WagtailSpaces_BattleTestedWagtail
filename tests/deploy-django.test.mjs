@@ -1,0 +1,75 @@
+import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
+import { readFile } from 'node:fs/promises'
+import { test } from 'node:test'
+import { parseSync } from '@slidev/parser'
+
+const root = new URL('../', import.meta.url)
+const source = await readFile(new URL('tests/fixtures/deploy-django-source.md', root), 'utf8')
+const raw = await readFile(new URL('slides.md', root), 'utf8')
+const deck = parseSync(raw)
+const original = source.replace(/^---\n[\s\S]*?\n---\n/, '').trim().split(/\n(?=# )/)
+const normalized = text => (text || '').replace(/\s+/g, ' ').trim()
+const heading = section => section.match(/^# (.+)/)[1].replace(/\{[^}]+\}$/, '').trim()
+
+test('retains the 14-slide port with the current Wagtail talk title and conference', () => {
+  const title = 'Battle-Tested Wagtail: Running at Scale with Kubernetes'
+  const titles = original.map(heading)
+  titles[0] = title
+  assert.equal(original.length, 14)
+  assert.equal(deck.slides.length, 14)
+  assert.deepEqual(deck.slides.map(s => s.title), titles)
+  assert.equal(deck.slides[0].frontmatter.theme, './themes/sixie-purple')
+  assert.equal(deck.slides[0].frontmatter.title, title)
+  assert.equal(deck.slides[0].frontmatter.event, 'Wagtail Space 2026')
+  assert.equal(deck.slides[0].frontmatter.date, 'Wagtail Space 2026')
+  assert.doesNotMatch(raw, /data-background-image|semi-filtered|r-fit-text|:::|Welcome to Slidev/)
+  assert.doesNotMatch(raw, /^transition:/m)
+})
+
+test('slide 2 links to the current Wagtail presentation repository', () => {
+  assert.ok(deck.slides[1].content.includes('<https://github.com/sixfeetup/2026_WagtailSpaces_BattleTestedWagtail>'))
+  assert.doesNotMatch(deck.slides[1].content, /2025_PyOhio_DeployDjango|original presentation repository/)
+  assert.ok(deck.slides[1].content.includes('/images/deploy-django/presentation-qr.png'))
+})
+
+test('preserves every speaker note in Slidev notes, not visible content', () => {
+  let count = 0
+  original.forEach((section, index) => {
+    const note = section.match(/::: notes\n([\s\S]*?)\n:::/)?.[1]
+    if (note) count++
+    assert.equal(normalized(deck.slides[index]?.note), normalized(note), `notes changed on slide ${index + 1}`)
+    if (note) assert.ok(!deck.slides[index].content.includes(note.trim()))
+  })
+  assert.equal(count, 8)
+})
+
+test('preserves the visible list items and corrects the malformed source repository link', () => {
+  original.forEach((section, index) => {
+    const body = section.replace(/::: notes\n[\s\S]*?\n:::/g, '')
+    const items = [...body.matchAll(/^\s*(?:\* |\d+\. )(.+)$/gm)].map(m => m[1].trim())
+    for (const item of items)
+      assert.ok(deck.slides[index]?.content.replaceAll('https://', '').includes(item.replaceAll('https://', '')), `missing slide ${index + 1} item: ${item}`)
+  })
+  assert.ok(raw.includes('[Scaf Github Repo](https://github.com/sixfeetup/scaf)'))
+  for (const url of ['mailto:calvin@sixfeetup.com', 'https://linkedin.com/in/calvinhp', 'https://x.com/calvinhp', 'https://fosstodon.org/@calvinhp', 'https://bsky.app/profile/calvinhp.com'])
+    assert.ok(raw.includes(url), `missing contact link ${url}`)
+})
+
+test('bundles verified content images and the updated QR, never Git LFS pointer files', async () => {
+  const files = [
+    ['argocd.png', '081b022635e0a61656617d86ad50ecb331abcb8eb7d34a5ae5625688d619f236'],
+    ['scaf-logo.webp', 'ca87c4cf5bf0502c7cc79bbc202eb6b518b5643544a40bc34c3ea874c0bc7a0c'],
+    ['gitops-flow.png', 'cec273179ac714aa86662f2472cca6c8b479bbcf46ac1cfc98b28c4982828a6d'],
+    ['presentation-qr.png', '002ba690a399ec538725a30b04a7aeaf541d5b88ffd76a7fbbb54ac53de0d7d0'],
+  ]
+  for (const [file, hash] of files) {
+    const image = await readFile(new URL(`public/images/deploy-django/${file}`, root))
+    assert.ok(!image.toString('utf8', 0, 80).includes('git-lfs.github.com'))
+    assert.ok(image.length > 500)
+    if (hash) assert.equal(createHash('sha256').update(image).digest('hex'), hash)
+    if (file.endsWith('.png')) assert.equal(image.subarray(1, 4).toString(), 'PNG')
+    else assert.equal(image.subarray(0, 4).toString(), 'RIFF')
+    assert.ok(raw.includes(`/images/deploy-django/${file}`))
+  }
+})
