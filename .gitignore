@@ -13,6 +13,7 @@ components.d.ts
 slides-export*/
 slides-export*.pdf
 slides-export*.pptx
+/battle-tested-wagtail.pdf
 
 # Local configuration and secrets
 *.local
