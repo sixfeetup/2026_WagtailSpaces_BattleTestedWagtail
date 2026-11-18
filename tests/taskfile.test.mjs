@@ -4,6 +4,8 @@ import { spawnSync } from 'node:child_process'
 import { test } from 'node:test'
 
 const repositoryRoot = new URL('../', import.meta.url)
+const taskAvailable = spawnSync('task', ['--version']).status === 0
+const taskTestOptions = { skip: taskAvailable ? false : 'Task is an optional local tool' }
 
 function runTask(...args) {
   return spawnSync('task', args, {
@@ -16,7 +18,7 @@ function assertTaskSucceeds(result) {
   assert.equal(result.status, 0, `${result.stdout}${result.stderr}`)
 }
 
-test('Taskfile exposes the common presentation workflows', () => {
+test('Taskfile exposes the common presentation workflows', taskTestOptions, () => {
   const result = runTask('--list')
 
   assertTaskSucceeds(result)
@@ -25,7 +27,7 @@ test('Taskfile exposes the common presentation workflows', () => {
   }
 })
 
-test('Taskfile delegates to the existing presentation commands', () => {
+test('Taskfile delegates to the existing presentation commands', taskTestOptions, () => {
   const expectedCommands = new Map([
     [[], 'task --list'],
     [['install'], 'pnpm install --frozen-lockfile'],
