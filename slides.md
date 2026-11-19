@@ -253,8 +253,8 @@ Lower the barrier to entry - they can start small
 # Resources
 
 - [Scaf Project Info](https://sixfeetup.com/scaf)
-- [Scaf Github Repo](https://github.com/sixfeetup/scaf)
-- [Scaf Full Stack Template](https://github.com/sixfeetup/scaf-fullstack-template)
+- [Scaf GitHub Repo](https://github.com/getscaf/scaf)
+- [Scaf Full Stack Template](https://github.com/getscaf/sfu-fullstack-template)
 - [Talk Python to Me Episode on Scaf](https://talkpython.fm/episodes/show/496/scaf-complete-blueprint-for-new-python-kubernetes-projects)
 - [Real Python Podcast #254: Scaling with Kubernetes and Karpenter](https://realpython.com/podcasts/rpp/254/)
 

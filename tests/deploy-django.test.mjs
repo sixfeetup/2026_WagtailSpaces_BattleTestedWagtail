@@ -45,6 +45,12 @@ test('opens with the college case, walks through GitOps, and closes with resourc
   assert.doesNotMatch(raw, /^transition:/m)
 })
 
+test('Resources links directly to both Scaf repositories in the getscaf organization', () => {
+  const { content } = slideByTitle.get('Resources')
+  assert.match(content, /\]\(https:\/\/github\.com\/getscaf\/scaf\)/)
+  assert.match(content, /\]\(https:\/\/github\.com\/getscaf\/sfu-fullstack-template\)/)
+})
+
 test('Resources links to the Real Python podcast interview', () => {
   assert.match(slideByTitle.get('Resources').content, /\[Real Python Podcast #254[^\]]*\]\(https:\/\/realpython\.com\/podcasts\/rpp\/254\/\)/)
 })
@@ -67,14 +73,15 @@ test('preserves every speaker note in Slidev notes, not visible content', () => 
   assert.equal(count, 7)
 })
 
-test('preserves the visible list items and corrects the malformed source repository link', () => {
+test('preserves original visible list items except the two superseded Scaf repository links', () => {
   original.forEach((section, index) => {
     const body = section.replace(/::: notes\n[\s\S]*?\n:::/g, '')
     const items = [...body.matchAll(/^\s*(?:\* |\d+\. )(.+)$/gm)].map(m => m[1].trim())
-    for (const item of items)
+    for (const item of items) {
+      if (heading(section) === 'Resources' && /\]\((?:https:\/\/)?github\.com\/sixfeetup\/scaf(?:-fullstack-template)?\)$/.test(item)) continue
       assert.ok(portedSlides[index]?.content.replaceAll('https://', '').includes(item.replaceAll('https://', '')), `missing original slide ${index + 1} item: ${item}`)
+    }
   })
-  assert.ok(raw.includes('[Scaf Github Repo](https://github.com/sixfeetup/scaf)'))
   for (const url of ['mailto:calvin@sixfeetup.com', 'https://linkedin.com/in/calvinhp', 'https://x.com/calvinhp', 'https://fosstodon.org/@calvinhp', 'https://bsky.app/profile/calvinhp.com'])
     assert.ok(raw.includes(url), `missing contact link ${url}`)
 })
