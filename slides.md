@@ -177,21 +177,6 @@ But each person can still have their own tools and preferences that extend the b
 
 ---
 
-# Hot Off the Presses
-
-- Decoupled from 1Password
-- "Dangerous Mode"
-- Sealed Secrets Automated
-- Teardown works cleanly
-- Github Automation for Variables and Keys
-- Updated ArgoCD to latest
-
-<!--
-Now includes more tools managed by Nix such as `gh` and `copier`
--->
-
----
-
 # New in Scaf: Wagtail CMS
 
 When generating a project, Scaf asks:
@@ -271,6 +256,7 @@ Lower the barrier to entry - they can start small
 - [Scaf Github Repo](https://github.com/sixfeetup/scaf)
 - [Scaf Full Stack Template](https://github.com/sixfeetup/scaf-fullstack-template)
 - [Talk Python to Me Episode on Scaf](https://talkpython.fm/episodes/show/496/scaf-complete-blueprint-for-new-python-kubernetes-projects)
+- [Real Python Podcast #254: Scaling with Kubernetes and Karpenter](https://realpython.com/podcasts/rpp/254/)
 
 ---
 

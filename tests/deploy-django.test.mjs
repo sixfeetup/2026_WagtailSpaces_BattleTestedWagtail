@@ -8,17 +8,18 @@ const root = new URL('../', import.meta.url)
 const source = await readFile(new URL('tests/fixtures/deploy-django-source.md', root), 'utf8')
 const raw = await readFile(new URL('slides.md', root), 'utf8')
 const deck = parseSync(raw)
-const original = source.replace(/^---\n[\s\S]*?\n---\n/, '').trim().split(/\n(?=# )/)
 const normalized = text => (text || '').replace(/\s+/g, ' ').trim()
 const heading = section => section.match(/^# (.+)/)[1].replace(/\{[^}]+\}$/, '').trim()
+const original = source.replace(/^---\n[\s\S]*?\n---\n/, '').trim().split(/\n(?=# )/)
+  .filter(section => heading(section) !== 'Hot Off the Presses')
 
 const title = 'Battle-Tested Wagtail: Running at Scale with Kubernetes'
 const slideByTitle = new Map(deck.slides.map(slide => [slide.title, slide]))
 const portedSlides = original.map((section, index) => slideByTitle.get(index === 0 ? title : heading(section)))
 
 test('opens with the college case, walks through GitOps, and closes with resources', () => {
-  assert.equal(original.length, 14)
-  assert.ok(portedSlides.every(Boolean), 'every original slide must still be present')
+  assert.equal(original.length, 13)
+  assert.ok(portedSlides.every(Boolean), 'every retained original slide must still be present')
   assert.deepEqual(deck.slides.map(s => s.title), [
     title,
     'Wagtail at Scale: The College Intranet',
@@ -29,7 +30,6 @@ test('opens with the college case, walks through GitOps, and closes with resourc
     'GitOps Flow',
     'Enabled by Scaf',
     'Nix Solves the Cross-Platform Issues',
-    'Hot Off the Presses',
     'New in Scaf: Wagtail CMS',
     'Life Before GitOps vs After',
     'Start Your GitOps Journey Today',
@@ -43,6 +43,10 @@ test('opens with the college case, walks through GitOps, and closes with resourc
   assert.equal(deck.slides[0].frontmatter.date, 'Wagtail Space 2026')
   assert.doesNotMatch(raw, /data-background-image|semi-filtered|r-fit-text|:::|Welcome to Slidev/)
   assert.doesNotMatch(raw, /^transition:/m)
+})
+
+test('Resources links to the Real Python podcast interview', () => {
+  assert.match(slideByTitle.get('Resources').content, /\[Real Python Podcast #254[^\]]*\]\(https:\/\/realpython\.com\/podcasts\/rpp\/254\/\)/)
 })
 
 test('Talk Slides links to the current Wagtail presentation repository', () => {
@@ -60,7 +64,7 @@ test('preserves every speaker note in Slidev notes, not visible content', () => 
     assert.equal(normalized(portedSlides[index]?.note), normalized(note), `notes changed on original slide ${index + 1}`)
     if (note) assert.ok(!portedSlides[index].content.includes(note.trim()))
   })
-  assert.equal(count, 8)
+  assert.equal(count, 7)
 })
 
 test('preserves the visible list items and corrects the malformed source repository link', () => {
