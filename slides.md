@@ -50,6 +50,8 @@ Real Python Podcast #254, 8:11 (https://youtu.be/LHglAeK8fSI?t=491): Karpenter r
 
 At 32:23 (https://youtu.be/LHglAeK8fSI?t=1943), I describe a separate project handling phone calls. A new node took about 30 seconds to come online in that setup. We submitted a placeholder pod that couldn’t fit to trigger provisioning before we ran out of room.
 
+Optional load-testing example (use this instead of the pre-warming story if time is tight): In the separate phone workload, the load test exposed a per-node pod limit, not a CPU or memory bottleneck. For a Wagtail load test, watch latency and errors alongside throughput. Measure what’s limiting you before adding capacity. Real Python Podcast #254, 20:18 (https://youtu.be/LHglAeK8fSI?t=1218).
+
 Transition: Adding capacity is one reason to run Wagtail on Kubernetes. Let’s look at what else Kubernetes gives us before we get to how we ship changes.
 -->
 
@@ -96,6 +98,10 @@ Talk about the old days, which may be the current days for meany folks
 
 <!--
 You control who has access to the KUBECONFIG
+
+Release safety: A Git revert changes the desired app version. Argo CD still has to reconcile and Kubernetes has to roll it out. That does not undo a Django database migration. Keep schema changes compatible with both app versions during a rollout. When a small, tested fix is practical, I prefer to roll forward.
+
+Environment parity: Think of a feature that works in staging but breaks in production because a new environment variable was never defined there. Put the shared configuration in a base and use Kustomize overlays for environment-specific values. Same deployment pattern, different settings. Original talk, 10:48 (https://youtu.be/H7GMjMgue14?t=648).
 -->
 
 ---
@@ -124,6 +130,14 @@ Powerful wrapper around kubectl and git
 # GitOps Flow
 
 <img src="/images/deploy-django/gitops-flow.png" alt="Scaf GitOps deployment flow diagram" class="mx-auto mt-4 max-h-[390px] max-w-full object-contain" />
+
+<!--
+Walk the diagram with one Wagtail release. A reviewed PR merges; GitHub Actions builds the image and pushes it to ECR. Then the staging manifest in Git points to that image. Argo CD sees the desired state change and syncs it. Pushing an image to the registry alone isn’t the instruction to deploy it.
+
+Verify the release in staging: can an editor sign in, publish a test page, and see it served? Then promote the same image to production with a config PR. Build once, verify in staging, promote without rebuilding.
+
+The image push and manifest update are from the original demo at 30:13 (https://youtu.be/H7GMjMgue14?t=1813). Staging-to-production promotion is the recommended pattern here, not a claim about the demo or the college deployment.
+-->
 
 ---
 
