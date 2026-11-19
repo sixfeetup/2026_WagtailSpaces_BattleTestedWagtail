@@ -12,13 +12,22 @@ const original = source.replace(/^---\n[\s\S]*?\n---\n/, '').trim().split(/\n(?=
 const normalized = text => (text || '').replace(/\s+/g, ' ').trim()
 const heading = section => section.match(/^# (.+)/)[1].replace(/\{[^}]+\}$/, '').trim()
 
-test('retains the 14-slide port with the current Wagtail talk title and conference', () => {
+const additions = new Map([
+  ['Why Kubernetes for Django?', 'Wagtail at Scale: The College Intranet'],
+  ['Hot Off the Presses', 'New in Scaf: Wagtail CMS'],
+])
+const addedTitles = new Set(additions.values())
+const portedSlides = deck.slides.filter(slide => !addedTitles.has(slide.title))
+
+test('retains the 14-slide port and inserts two Wagtail slides at their anchors', () => {
   const title = 'Battle-Tested Wagtail: Running at Scale with Kubernetes'
   const titles = original.map(heading)
   titles[0] = title
   assert.equal(original.length, 14)
-  assert.equal(deck.slides.length, 14)
-  assert.deepEqual(deck.slides.map(s => s.title), titles)
+  assert.equal(deck.slides.length, 16)
+  assert.deepEqual(deck.slides.map(s => s.title), titles.flatMap(title =>
+    additions.has(title) ? [title, additions.get(title)] : [title],
+  ))
   assert.equal(deck.slides[0].frontmatter.theme, './themes/sixie-purple')
   assert.equal(deck.slides[0].frontmatter.title, title)
   assert.equal(deck.slides[0].frontmatter.event, 'Wagtail Space 2026')
@@ -38,8 +47,8 @@ test('preserves every speaker note in Slidev notes, not visible content', () => 
   original.forEach((section, index) => {
     const note = section.match(/::: notes\n([\s\S]*?)\n:::/)?.[1]
     if (note) count++
-    assert.equal(normalized(deck.slides[index]?.note), normalized(note), `notes changed on slide ${index + 1}`)
-    if (note) assert.ok(!deck.slides[index].content.includes(note.trim()))
+    assert.equal(normalized(portedSlides[index]?.note), normalized(note), `notes changed on original slide ${index + 1}`)
+    if (note) assert.ok(!portedSlides[index].content.includes(note.trim()))
   })
   assert.equal(count, 8)
 })
@@ -49,7 +58,7 @@ test('preserves the visible list items and corrects the malformed source reposit
     const body = section.replace(/::: notes\n[\s\S]*?\n:::/g, '')
     const items = [...body.matchAll(/^\s*(?:\* |\d+\. )(.+)$/gm)].map(m => m[1].trim())
     for (const item of items)
-      assert.ok(deck.slides[index]?.content.replaceAll('https://', '').includes(item.replaceAll('https://', '')), `missing slide ${index + 1} item: ${item}`)
+      assert.ok(portedSlides[index]?.content.replaceAll('https://', '').includes(item.replaceAll('https://', '')), `missing original slide ${index + 1} item: ${item}`)
   })
   assert.ok(raw.includes('[Scaf Github Repo](https://github.com/sixfeetup/scaf)'))
   for (const url of ['mailto:calvin@sixfeetup.com', 'https://linkedin.com/in/calvinhp', 'https://x.com/calvinhp', 'https://fosstodon.org/@calvinhp', 'https://bsky.app/profile/calvinhp.com'])

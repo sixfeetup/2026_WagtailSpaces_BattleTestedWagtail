@@ -83,6 +83,31 @@ You control who has access to the KUBECONFIG
 
 ---
 
+# Wagtail at Scale: The College Intranet
+
+- **Production:** 28k+ visits/day
+- **Load test:** 5k simulated concurrent users · 60k requests/minute
+
+<hr class="my-4" />
+
+## How to scale on EKS: a general pattern
+
+1. Add Wagtail replicas to serve more requests.
+2. If the new pods can’t fit, Karpenter provisions more nodes.
+3. Kubernetes schedules the waiting pods on the new capacity.
+
+<!--
+The college’s daily visits are production traffic. The concurrency and request rate are from load tests. The EKS flow is a general scaling pattern, not a description of the college’s infrastructure.
+
+Real Python Podcast #254, 8:11 (https://youtu.be/LHglAeK8fSI?t=491): Karpenter responds to unschedulable pods. It provisions nodes; it doesn’t react directly to traffic or decide how many Wagtail replicas to run.
+
+At 32:23 (https://youtu.be/LHglAeK8fSI?t=1943), I describe a separate project handling phone calls. A new node took about 30 seconds to come online in that setup. We submitted a placeholder pod that couldn’t fit to trigger provisioning before we ran out of room.
+
+Transition: Kubernetes handles capacity. GitOps makes changes to that setup repeatable. Here’s where Argo CD comes in.
+-->
+
+---
+
 # Enter Argo CD
 
 <div class="grid grid-cols-[1fr_180px] gap-8 items-start">
@@ -171,6 +196,25 @@ But each person can still have their own tools and preferences that extend the b
 
 <!--
 Now includes more tools managed by Nix such as `gh` and `copier`
+-->
+
+---
+
+# New in Scaf: Wagtail CMS
+
+When generating a project, Scaf asks:
+
+> **Do you want Wagtail CMS?**
+
+If you opt in, you get one of two rendering paths:
+
+- **Without Next.js:** Wagtail pages rendered with Django templates.
+- **With Next.js:** Headless Wagtail with a Next.js frontend.
+
+[Scaf fullstack template v1.18.0](https://github.com/getscaf/sfu-fullstack-template/releases/tag/v1.18.0)
+
+<!--
+Wagtail is optional, and Next.js is a separate choice. If you want Django to render your Wagtail pages, skip Next.js when generating the project.
 -->
 
 ---
