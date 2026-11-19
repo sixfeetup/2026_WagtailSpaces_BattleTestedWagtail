@@ -68,6 +68,14 @@ Transition: Adding capacity is one reason to run Wagtail on Kubernetes. Let’s 
 - **Deploy Story**: Matches Developer Environment
 - **Cloud Agnostic**: No vendor lock-in
 
+<!--
+Don’t read the list. Focus on what Kubernetes does for a Wagtail team: it runs replaceable copies of the web app, routes traffic to ready pods, and replaces failed pods. Keep the database and uploaded media outside the web pods so replacing a pod doesn’t lose content.
+
+A rolling update can keep the site serving while the new version comes up, but zero downtime isn’t automatic. Use readiness probes so new pods only receive traffic when they’re ready, keep enough capacity during the rollout, and make sure old and new versions can coexist with the database schema.
+
+Transition: Kubernetes keeps the app running. GitOps gives us a repeatable way to tell it what to run next.
+-->
+
 ---
 
 # GitOps: The Operating Model

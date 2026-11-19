@@ -62,6 +62,12 @@ test('Talk Slides links to the current Wagtail presentation repository', () => {
   assert.ok(content.includes('/images/deploy-django/presentation-qr.png'))
 })
 
+test('Kubernetes rollout guidance is available to the presenter, not the audience', () => {
+  const { note, content } = slideByTitle.get('Why Kubernetes for Django?')
+  assert.match(note ?? '', /readiness probes/)
+  assert.doesNotMatch(content, /readiness probes/)
+})
+
 test('preserves every speaker note in Slidev notes, not visible content', () => {
   let count = 0
   original.forEach((section, index) => {
@@ -70,7 +76,7 @@ test('preserves every speaker note in Slidev notes, not visible content', () => 
     const slide = portedSlides[index]
     const originalNote = slide.title === 'Why GitOps for Django?'
       ? slide.note?.split('\n\nRelease safety:')[0]
-      : slide.title === 'GitOps Flow' ? undefined : slide.note
+      : ['GitOps Flow', 'Why Kubernetes for Django?'].includes(slide.title) ? undefined : slide.note
     assert.equal(normalized(originalNote), normalized(note), `notes changed on original slide ${index + 1}`)
     if (note) assert.ok(!slide.content.includes(note.trim()))
   })
