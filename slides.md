@@ -268,6 +268,7 @@ Lower the barrier to entry - they can start small
 
 ---
 layout: center
+class: sixie-dark
 ---
 
 # Talk To Me
