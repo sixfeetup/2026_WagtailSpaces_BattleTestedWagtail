@@ -137,7 +137,9 @@ Powerful wrapper around kubectl and git
 
 # GitOps Flow
 
-<img src="/images/deploy-django/gitops-flow.png" alt="Scaf GitOps deployment flow diagram" class="mx-auto mt-4 max-h-[390px] max-w-full object-contain" />
+<div class="mt-4 isolate" style="background-color: var(--sixie-paper)">
+  <img src="/images/deploy-django/gitops-flow.png" alt="Scaf GitOps deployment flow diagram" class="mx-auto max-h-[390px] max-w-full object-contain mix-blend-multiply" />
+</div>
 
 <!--
 Walk the diagram with one Wagtail release. A reviewed PR merges; GitHub Actions builds the image and pushes it to ECR. Then the staging manifest in Git points to that image. Argo CD sees the desired state change and syncs it. Pushing an image to the registry alone isn’t the instruction to deploy it.
@@ -218,6 +220,29 @@ Wagtail is optional, and Next.js is a separate choice. If you want Django to ren
 
 ---
 
+# Start Your GitOps Journey Today
+
+### 15-Minute Quick Wins:
+
+1. **Install Scaf**: One line installer
+2. **Create a Project**: `scaf myproject`
+3. **Deploy to AWS**: Login via CLI and deploy
+4. **Make a Change**: Edit YAML, commit, watch magic
+
+<hr class="my-4" />
+
+### You Don't Need:
+
+- Perfect Kubernetes knowledge
+- Complex CI/CD pipelines
+- A huge team
+
+<!--
+Lower the barrier to entry - they can start small
+-->
+
+---
+
 # Life Before GitOps vs After
 
 <div class="grid grid-cols-2 gap-10">
@@ -246,29 +271,6 @@ Wagtail is optional, and Next.js is a separate choice. If you want Django to ren
 
 </div>
 </div>
-
----
-
-# Start Your GitOps Journey Today
-
-### 15-Minute Quick Wins:
-
-1. **Install Scaf**: One line installer
-2. **Create a Project**: `scaf myproject`
-3. **Deploy to AWS**: Login via CLI and deploy
-4. **Make a Change**: Edit YAML, commit, watch magic
-
-<hr class="my-4" />
-
-### You Don't Need:
-
-- Perfect Kubernetes knowledge
-- Complex CI/CD pipelines
-- A huge team
-
-<!--
-Lower the barrier to entry - they can start small
--->
 
 ---
 
