@@ -147,7 +147,19 @@ cd 2026_WagtailSpaces_BattleTestedWagtail
 pnpm install --frozen-lockfile
 ```
 
+[Task](https://taskfile.dev/installation/) is optional, but provides short commands for the common workflows. If it is installed, the equivalent dependency setup is:
+
+```sh
+task install
+```
+
 ### 2️⃣ Start the presentation
+
+```sh
+task start
+```
+
+Or run Slidev directly through pnpm:
 
 ```sh
 pnpm run dev
@@ -187,12 +199,24 @@ Open <http://localhost:3031/1> and press **Right → Right → Left** to see sli
 ### 1️⃣ Check the presentation
 
 ```sh
+task test
+```
+
+Without Task, run the Node test command directly:
+
+```sh
 node --test tests/*.test.mjs
 ```
 
 Checks cover the current talk identity, retained source content and speaker notes, repository link, image hashes, shared header gutters, transitions, and viewport isolation. The [theme guide](themes/sixie-purple/README.md#browser-regression-checks) documents the optional frame-by-frame browser regression for background continuity.
 
 ### 2️⃣ Build for production
+
+```sh
+task build
+```
+
+Or build directly through pnpm:
 
 ```sh
 pnpm run build
@@ -211,11 +235,16 @@ The GitHub Pages target URL is <https://sixfeetup.github.io/2026_WagtailSpaces_B
 <details>
 <summary><strong>📄 Export a PDF or regenerate the repository QR</strong></summary>
 
-PDF export requires Playwright's Chromium dependency, which is not installed by default:
+PDF export uses Slidev's native exporter and the project's Playwright Chromium dependency:
 
 ```sh
-pnpm add -D playwright-chromium
-pnpm run export
+task pdf
+```
+
+This writes **`battle-tested-wagtail.pdf`** at the repository root. Without Task, run the native exporter directly:
+
+```sh
+pnpm run export --output battle-tested-wagtail.pdf
 ```
 
 To regenerate slide 2's QR code, install the `qrencode` CLI and run:

@@ -1,0 +1,32 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available presentation tasks
+    cmds:
+      - task --list
+
+  install:
+    desc: Install locked presentation dependencies
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  start:
+    desc: Start the Slidev presentation
+    cmds:
+      - pnpm run dev
+
+  test:
+    desc: Run the presentation tests
+    cmds:
+      - node --test tests/*.test.mjs
+
+  build:
+    desc: Build the production presentation
+    cmds:
+      - pnpm run build
+
+  pdf:
+    desc: Export the presentation as a PDF
+    cmds:
+      - pnpm run export --output battle-tested-wagtail.pdf
