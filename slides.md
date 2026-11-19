@@ -30,11 +30,41 @@ We struggled so you don't have to
 
 ---
 
-# Talk Slides
+# Wagtail at Scale: The College Intranet
 
-<https://github.com/sixfeetup/2026_WagtailSpaces_BattleTestedWagtail>
+- **Production:** 28k+ visits/day
+- **Load test:** 5k simulated concurrent users · 60k requests/minute
 
-<img src="/images/deploy-django/presentation-qr.png" alt="QR code linking to the Battle-Tested Wagtail presentation repository" class="mx-auto mt-6 w-64" />
+<hr class="my-4" />
+
+## How to scale on EKS: a general pattern
+
+1. Add Wagtail replicas to serve more requests.
+2. If the new pods can’t fit, Karpenter provisions more nodes.
+3. Kubernetes schedules the waiting pods on the new capacity.
+
+<!--
+The college’s daily visits are production traffic. The concurrency and request rate are from load tests. The EKS flow is a general scaling pattern, not a description of the college’s infrastructure.
+
+Real Python Podcast #254, 8:11 (https://youtu.be/LHglAeK8fSI?t=491): Karpenter responds to unschedulable pods. It provisions nodes; it doesn’t react directly to traffic or decide how many Wagtail replicas to run.
+
+At 32:23 (https://youtu.be/LHglAeK8fSI?t=1943), I describe a separate project handling phone calls. A new node took about 30 seconds to come online in that setup. We submitted a placeholder pod that couldn’t fit to trigger provisioning before we ran out of room.
+
+Transition: Adding capacity is one reason to run Wagtail on Kubernetes. Let’s look at what else Kubernetes gives us before we get to how we ship changes.
+-->
+
+---
+
+# Why Kubernetes for Django?
+
+- **Resource Efficiency**: Auto-scaling based on actual load
+- **Zero-downtime Deployments**: Rolling updates by default
+- **Self-healing**: Automatic container restarts
+- **Service Discovery**: No more hardcoded URLs
+- **Secrets Management**: Built-in, encrypted at rest
+- **Control Plane**: Automate releases and orchestration
+- **Deploy Story**: Matches Developer Environment
+- **Cloud Agnostic**: No vendor lock-in
 
 ---
 
@@ -70,44 +100,6 @@ You control who has access to the KUBECONFIG
 
 ---
 
-# Why Kubernetes for Django?
-
-- **Resource Efficiency**: Auto-scaling based on actual load
-- **Zero-downtime Deployments**: Rolling updates by default
-- **Self-healing**: Automatic container restarts
-- **Service Discovery**: No more hardcoded URLs
-- **Secrets Management**: Built-in, encrypted at rest
-- **Control Plane**: Automate releases and orchestration
-- **Deploy Story**: Matches Developer Environment
-- **Cloud Agnostic**: No vendor lock-in
-
----
-
-# Wagtail at Scale: The College Intranet
-
-- **Production:** 28k+ visits/day
-- **Load test:** 5k simulated concurrent users · 60k requests/minute
-
-<hr class="my-4" />
-
-## How to scale on EKS: a general pattern
-
-1. Add Wagtail replicas to serve more requests.
-2. If the new pods can’t fit, Karpenter provisions more nodes.
-3. Kubernetes schedules the waiting pods on the new capacity.
-
-<!--
-The college’s daily visits are production traffic. The concurrency and request rate are from load tests. The EKS flow is a general scaling pattern, not a description of the college’s infrastructure.
-
-Real Python Podcast #254, 8:11 (https://youtu.be/LHglAeK8fSI?t=491): Karpenter responds to unschedulable pods. It provisions nodes; it doesn’t react directly to traffic or decide how many Wagtail replicas to run.
-
-At 32:23 (https://youtu.be/LHglAeK8fSI?t=1943), I describe a separate project handling phone calls. A new node took about 30 seconds to come online in that setup. We submitted a placeholder pod that couldn’t fit to trigger provisioning before we ran out of room.
-
-Transition: Kubernetes handles capacity. GitOps makes changes to that setup repeatable. Here’s where Argo CD comes in.
--->
-
----
-
 # Enter Argo CD
 
 <div class="grid grid-cols-[1fr_180px] gap-8 items-start">
@@ -126,6 +118,12 @@ Transition: Kubernetes handles capacity. GitOps makes changes to that setup repe
 <!--
 Powerful wrapper around kubectl and git
 -->
+
+---
+
+# GitOps Flow
+
+<img src="/images/deploy-django/gitops-flow.png" alt="Scaf GitOps deployment flow diagram" class="mx-auto mt-4 max-h-[390px] max-w-full object-contain" />
 
 ---
 
@@ -149,12 +147,6 @@ Scaf solves the "blank page" problem
 you don't have to figure out how to structure your k8s configs, how to handle secrets, or how to set up ArgoCD.
 It's all there from the start.
 -->
-
----
-
-# GitOps Flow
-
-<img src="/images/deploy-django/gitops-flow.png" alt="Scaf GitOps deployment flow diagram" class="mx-auto mt-4 max-h-[390px] max-w-full object-contain" />
 
 ---
 
@@ -279,6 +271,14 @@ Lower the barrier to entry - they can start small
 - [Scaf Github Repo](https://github.com/sixfeetup/scaf)
 - [Scaf Full Stack Template](https://github.com/sixfeetup/scaf-fullstack-template)
 - [Talk Python to Me Episode on Scaf](https://talkpython.fm/episodes/show/496/scaf-complete-blueprint-for-new-python-kubernetes-projects)
+
+---
+
+# Talk Slides
+
+<https://github.com/sixfeetup/2026_WagtailSpaces_BattleTestedWagtail>
+
+<img src="/images/deploy-django/presentation-qr.png" alt="QR code linking to the Battle-Tested Wagtail presentation repository" class="mx-auto mt-6 w-64" />
 
 ---
 layout: center

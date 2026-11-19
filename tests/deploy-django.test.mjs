@@ -12,22 +12,31 @@ const original = source.replace(/^---\n[\s\S]*?\n---\n/, '').trim().split(/\n(?=
 const normalized = text => (text || '').replace(/\s+/g, ' ').trim()
 const heading = section => section.match(/^# (.+)/)[1].replace(/\{[^}]+\}$/, '').trim()
 
-const additions = new Map([
-  ['Why Kubernetes for Django?', 'Wagtail at Scale: The College Intranet'],
-  ['Hot Off the Presses', 'New in Scaf: Wagtail CMS'],
-])
-const addedTitles = new Set(additions.values())
-const portedSlides = deck.slides.filter(slide => !addedTitles.has(slide.title))
+const title = 'Battle-Tested Wagtail: Running at Scale with Kubernetes'
+const slideByTitle = new Map(deck.slides.map(slide => [slide.title, slide]))
+const portedSlides = original.map((section, index) => slideByTitle.get(index === 0 ? title : heading(section)))
 
-test('retains the 14-slide port and inserts two Wagtail slides at their anchors', () => {
-  const title = 'Battle-Tested Wagtail: Running at Scale with Kubernetes'
-  const titles = original.map(heading)
-  titles[0] = title
+test('opens with the college case, walks through GitOps, and closes with resources', () => {
   assert.equal(original.length, 14)
-  assert.equal(deck.slides.length, 16)
-  assert.deepEqual(deck.slides.map(s => s.title), titles.flatMap(title =>
-    additions.has(title) ? [title, additions.get(title)] : [title],
-  ))
+  assert.ok(portedSlides.every(Boolean), 'every original slide must still be present')
+  assert.deepEqual(deck.slides.map(s => s.title), [
+    title,
+    'Wagtail at Scale: The College Intranet',
+    'Why Kubernetes for Django?',
+    'GitOps: The Operating Model',
+    'Why GitOps for Django?',
+    'Enter Argo CD',
+    'GitOps Flow',
+    'Enabled by Scaf',
+    'Nix Solves the Cross-Platform Issues',
+    'Hot Off the Presses',
+    'New in Scaf: Wagtail CMS',
+    'Life Before GitOps vs After',
+    'Start Your GitOps Journey Today',
+    'Resources',
+    'Talk Slides',
+    'Talk To Me',
+  ])
   assert.equal(deck.slides[0].frontmatter.theme, './themes/sixie-purple')
   assert.equal(deck.slides[0].frontmatter.title, title)
   assert.equal(deck.slides[0].frontmatter.event, 'Wagtail Space 2026')
@@ -36,10 +45,11 @@ test('retains the 14-slide port and inserts two Wagtail slides at their anchors'
   assert.doesNotMatch(raw, /^transition:/m)
 })
 
-test('slide 2 links to the current Wagtail presentation repository', () => {
-  assert.ok(deck.slides[1].content.includes('<https://github.com/sixfeetup/2026_WagtailSpaces_BattleTestedWagtail>'))
-  assert.doesNotMatch(deck.slides[1].content, /2025_PyOhio_DeployDjango|original presentation repository/)
-  assert.ok(deck.slides[1].content.includes('/images/deploy-django/presentation-qr.png'))
+test('Talk Slides links to the current Wagtail presentation repository', () => {
+  const { content } = slideByTitle.get('Talk Slides')
+  assert.ok(content.includes('<https://github.com/sixfeetup/2026_WagtailSpaces_BattleTestedWagtail>'))
+  assert.doesNotMatch(content, /2025_PyOhio_DeployDjango|original presentation repository/)
+  assert.ok(content.includes('/images/deploy-django/presentation-qr.png'))
 })
 
 test('preserves every speaker note in Slidev notes, not visible content', () => {
